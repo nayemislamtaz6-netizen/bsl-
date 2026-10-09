@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b5d3b">
+<title>পটুয়াখালী ইউনিট</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#0b5d3b;--g2:#0f7a4e;--r:#c8372d;--bg:#f3f6f2;--card:#fff;--tx:#14231b;--mu:#5b6b62;--bd:#dbe4dc}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1511;--card:#17211a;--tx:#e8f0ea;--mu:#9bb0a2;--bd:#27372c}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hind Siliguri',system-ui,sans-serif;background:var(--bg);color:var(--tx);padding-bottom:76px;line-height:1.55}
+header{background:var(--g);color:#fff;padding:22px 18px 20px;border-bottom:5px solid var(--r);display:flex;align-items:center;gap:10px}
+header>div{flex:1}
+header h1{font-size:1.45rem;font-weight:700}
+header p{opacity:.85;font-size:.95rem}
+#logoutBtn{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:8px;padding:7px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+main{padding:16px;max-width:640px;margin:auto}
+.tab{display:none}.tab.on{display:block}
+h2{font-size:1.15rem;margin:4px 0 12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px}
+.card h3{font-size:1.05rem;margin-bottom:2px}
+.meta{color:var(--mu);font-size:.85rem}
+.card p{margin-top:6px}
+.row{display:flex;gap:12px;align-items:center}
+.av{width:46px;height:46px;border-radius:50%;background:var(--g2);color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.1rem;flex:none}
+.row a{margin-left:auto;background:var(--g);color:#fff;text-decoration:none;padding:7px 13px;border-radius:8px;font-size:.9rem}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--tx);font:inherit;margin-bottom:12px}
+.btn{display:inline-block;background:var(--r);color:#fff;text-decoration:none;padding:10px 16px;border:0;border-radius:8px;font:inherit;font-weight:500;margin:4px 8px 4px 0;cursor:pointer}
+.btn.g{background:var(--g)}
+.btn.s{padding:7px 12px;font-size:.88rem}
+.empty{color:var(--mu);text-align:center;padding:24px 0}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--bd)}
+nav button{flex:1;padding:12px 4px;border:0;background:none;color:var(--mu);font:inherit;font-size:.95rem;cursor:pointer;border-top:3px solid transparent}
+nav button.on{color:var(--g2);font-weight:700;border-top-color:var(--r)}
+nav button:focus-visible,input:focus-visible,select:focus-visible,.btn:focus-visible{outline:2px solid var(--r);outline-offset:2px}
+/* গেট */
+#gate{position:fixed;inset:0;background:var(--bg);z-index:50;overflow:auto}
+#gate .box{max-width:420px;margin:auto;padding:20px 16px}
+.gtabs{display:flex;gap:8px;margin-bottom:14px}
+.gtabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font:inherit;cursor:pointer}
+.gtabs button.on{background:var(--g);color:#fff;border-color:var(--g)}
+.msg{padding:10px 12px;border-radius:8px;margin-bottom:12px;font-size:.92rem}
+.msg.err{background:#fde8e6;color:#8d1f17}
+.msg.ok{background:#e1f3e8;color:#0b5d3b}
+.hide{display:none!important}
+.tag{display:inline-block;background:var(--g2);color:#fff;border-radius:6px;padding:1px 8px;font-size:.78rem;margin-left:6px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.acts select{width:auto;margin:0;flex:1;min-width:140px;padding:8px}
+.link{background:none;border:0;color:var(--g2);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+</style>
+</head>
+<body>
+
+<!-- প্রবেশ / নিবন্ধন -->
+<div id="gate">
+  <div class="box">
+    <div style="text-align:center;margin:10px 0 18px">
+      <h1 style="color:var(--g2)" id="gName"></h1>
+      <div class="meta">প্রবেশ করতে লগইন বা নিবন্ধন করুন</div>
+    </div>
+    <div class="gtabs">
+      <button id="gtLogin" class="on" type="button">লগইন</button>
+      <button id="gtReg" type="button">নিবন্ধন</button>
+    </div>
+    <div id="gMsg"></div>
+
+    <div id="loginForm">
+      <input id="lName" placeholder="আপনার নাম" autocomplete="username" aria-label="নাম">
+      <input id="lPass" type="password" placeholder="পাসওয়ার্ড" autocomplete="current-password" aria-label="পাসওয়ার্ড">
+      <button class="btn g" id="loginBtn" type="button">প্রবেশ করুন</button>
+    </div>
+
+    <div id="regForm" class="hide">
+      <input id="rName" placeholder="আপনার পূর্ণ নাম" autocomplete="name" aria-label="নাম">
+      <input id="rPhone" type="tel" placeholder="মোবাইল নাম্বার" autocomplete="tel" aria-label="মোবাইল নাম্বার">
+      <input id="rPass" type="password" placeholder="পাসওয়ার্ড (কমপক্ষে ৪ অক্ষর)" autocomplete="new-password" aria-label="পাসওয়ার্ড">
+      <button class="btn g" id="regBtn" type="button">নিবন্ধন করুন</button>
+      <p class="meta">নিবন্ধনের পর এডমিন অনুমোদন দিলে তবেই আপনি প্রবেশ করতে পারবেন।</p>
+    </div>
+
+    <p style="margin-top:22px;text-align:center"><button class="link" id="gateAdmin" type="button">এডমিন এন্ট্রি</button></p>
+  </div>
+</div>
+
+<header>
+  <div>
+    <h1 id="orgName"></h1>
+    <p id="orgSub"></p>
+  </div>
+  <button id="logoutBtn" type="button">বের হন</button>
+</header>
+
+<main>
+  <section class="tab on" id="notices"><h2>নোটিশ ও খবর</h2><div id="noticeList"></div></section>
+  <section class="tab" id="events"><h2>কার্যক্রম</h2><div id="eventList"></div></section>
+  <section class="tab" id="members"><h2>সদস্য তালিকা</h2>
+    <input id="q" type="search" placeholder="নাম বা পদবি দিয়ে খুঁজুন" aria-label="সদস্য খুঁজুন">
+    <div id="memberList"></div>
+  </section>
+  <section class="tab" id="contact"><h2>যোগাযোগ</h2>
+    <div class="card" id="contactCard"></div>
+  </section>
+  <section class="tab" id="admin"><h2>এডমিন প্যানেল</h2>
+    <h3 style="margin:6px 0 8px">অপেক্ষমাণ (পেন্ডিং) <span id="pCount" class="meta"></span></h3>
+    <div id="pendingList"></div>
+    <h3 style="margin:16px 0 8px">অনুমোদিত সদস্য</h3>
+    <div id="approvedList"></div>
+    <button class="btn g" id="adminExit" type="button" style="margin-top:8px">এডমিন থেকে বের হন</button>
+  </section>
+</main>
+
+<nav id="mainNav">
+  <button class="on" data-t="notices">নোটিশ</button>
+  <button data-t="events">কার্যক্রম</button>
+  <button data-t="members">সদস্য</button>
+  <button data-t="contact">যোগাযোগ</button>
+</nav>
+
+<script>
+/* ====== এখানে নিজের তথ্য বদলান ====== */
+const ORG = { name: "পটুয়াখালী ইউনিট", sub: "আপনার সংগঠনের সংক্ষিপ্ত পরিচিতি এখানে লিখুন" };
+
+const NOTICES = [
+  { title: "নমুনা নোটিশ ১", date: "২০২৬-১০-০৯", body: "এখানে নোটিশের বিস্তারিত লিখুন।" },
+  { title: "নমুনা নোটিশ ২", date: "২০২৬-১০-০১", body: "এখানে আরেকটি নোটিশ লিখুন।" }
+];
+
+const EVENTS = [
+  { title: "নমুনা সভা", date: "২০২৬-১০-১৫", place: "পটুয়াখালী", body: "সভার বিষয় ও সময় এখানে লিখুন।" }
+];
+
+const ROLES = ["সভাপতি", "সহ-সভাপতি", "সাধারণ সম্পাদক", "যুগ্ম সাধারণ সম্পাদক", "সাংগঠনিক সম্পাদক", "সদস্য"];
+
+const CONTACT = { address: "পটুয়াখালী, বরিশাল বিভাগ", phone: "", email: "", facebook: "" };
+/* ====== তথ্য শেষ ====== */
+
+const ADMIN_HASH = "d86e5c18dbea2064052d5aa597f37d95f20d0f9cc97c059681efc18ed5d44c17";
+const KEY = "ptk_users_v1", SESS = "ptk_session_v1", ADM = "ptk_admin_v1";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s).trim().replace(/\s+/g, ' ').toLowerCase();
+
+async function H(s){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('ptk:' + s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || []; }catch(e){ return []; } }
+function save(u){ try{ localStorage.setItem(KEY, JSON.stringify(u)); }catch(e){ alert('তথ্য সংরক্ষণ করা যায়নি'); } }
+function getSess(){ try{ return localStorage.getItem(SESS); }catch(e){ return null; } }
+function setSess(v){ try{ v ? localStorage.setItem(SESS, v) : localStorage.removeItem(SESS); }catch(e){} }
+function isAdmin(){ try{ return sessionStorage.getItem(ADM) === '1'; }catch(e){ return false; } }
+function setAdmin(v){ try{ v ? sessionStorage.setItem(ADM, '1') : sessionStorage.removeItem(ADM); }catch(e){} }
+
+/* ---------- গেট ---------- */
+function gmsg(t, ok){ $('#gMsg').innerHTML = t ? `<div class="msg ${ok ? 'ok' : 'err'}">${esc(t)}</div>` : ''; }
+function gtab(reg){
+  $('#gtLogin').classList.toggle('on', !reg); $('#gtReg').classList.toggle('on', reg);
+  $('#loginForm').classList.toggle('hide', reg); $('#regForm').classList.toggle('hide', !reg);
+  gmsg('');
+}
+$('#gtLogin').onclick = () => gtab(false);
+$('#gtReg').onclick = () => gtab(true);
+
+$('#regBtn').onclick = async () => {
+  const name = $('#rName').value.trim().replace(/\s+/g, ' '), phone = $('#rPhone').value.trim(), pass = $('#rPass').value;
+  if (!name || !phone || !pass) return gmsg('নাম, নাম্বার ও পাসওয়ার্ড — সব দিতে হবে');
+  if (pass.length < 4) return gmsg('পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে');
+  const users = load();
+  if (users.some(u => norm(u.name) === norm(name))) return gmsg('এই নামে আগেই নিবন্ধন হয়েছে। নামের সাথে কিছু যোগ করে লিখুন (যেমন: পিতার নাম)।');
+  users.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, phone, pass: await H(pass), status: 'pending', role: '' });
+  save(users);
+  $('#rName').value = $('#rPhone').value = $('#rPass').value = '';
+  gtab(false);
+  gmsg('নিবন্ধন সম্পন্ন হয়েছে। এডমিন অনুমোদন দিলে আপনি নাম ও পাসওয়ার্ড দিয়ে প্রবেশ করতে পারবেন।', true);
+};
+
+$('#loginBtn').onclick = async () => {
+  const name = $('#lName').value, pass = $('#lPass').value;
+  if (!name.trim() || !pass) return gmsg('নাম ও পাসওয়ার্ড দিন');
+  const u = load().find(x => norm(x.name) === norm(name));
+  if (!u || u.pass !== await H(pass)) return gmsg('নাম বা পাসওয়ার্ড ভুল');
+  if (u.status !== 'approved') return gmsg('আপনার নিবন্ধন এখনো এডমিনের অনুমোদনের অপেক্ষায় আছে');
+  setSess(u.id);
+  $('#lPass').value = '';
+  enter();
+};
+['#lName', '#lPass'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginBtn').click(); }));
+
+async function adminLogin(){
+  const p = prompt('এডমিন পাসওয়ার্ড দিন');
+  if (p === null) return;
+  if (!(window.crypto && crypto.subtle)) return alert('এই ব্রাউজারে নিরাপদ পাসওয়ার্ড যাচাই সম্ভব নয়');
+  if (await H(p) === ADMIN_HASH){ setAdmin(true); enter(true); }
+  else alert('পাসওয়ার্ড ভুল');
+}
+$('#gateAdmin').onclick = adminLogin;
+
+/* ---------- অ্যাপ ---------- */
+function enter(toAdmin){
+  const u = load().find(x => x.id === getSess() && x.status === 'approved');
+  if (!u && !isAdmin()){ $('#gate').classList.remove('hide'); $('#logoutBtn').classList.add('hide'); return; }
+  $('#gate').classList.add('hide');
+  $('#logoutBtn').classList.remove('hide');
+  renderMembers($('#q').value);
+  renderContact();
+  if (isAdmin()) renderAdmin();
+  showTab(toAdmin && isAdmin() ? 'admin' : 'notices');
+}
+function showTab(t){
+  document.querySelectorAll('#mainNav button,.tab').forEach(x => x.classList.remove('on'));
+  const b = document.querySelector(`#mainNav button[data-t="${t}"]`); if (b) b.classList.add('on');
+  $('#' + t).classList.add('on'); scrollTo(0, 0);
+}
+
+$('#orgName').textContent = ORG.name; $('#orgSub').textContent = ORG.sub; $('#gName').textContent = ORG.name;
+document.title = ORG.name;
+
+$('#noticeList').innerHTML = NOTICES.length
+  ? NOTICES.map(n => `<div class="card"><h3>${esc(n.title)}</h3><div class="meta">${esc(n.date)}</div><p>${esc(n.body)}</p></div>`).join('')
+  : '<div class="empty">এখনো কোনো নোটিশ নেই</div>';
+$('#eventList').innerHTML = EVENTS.length
+  ? EVENTS.map(e => `<div class="card"><h3>${esc(e.title)}</h3><div class="meta">${esc(e.date)} • ${esc(e.place)}</div><p>${esc(e.body)}</p></div>`).join('')
+  : '<div class="empty">এখনো কোনো কার্যক্রম নেই</div>';
+
+function renderMembers(q = ''){
+  const list = load().filter(u => u.status === 'approved' && (u.name + u.role).includes(q.trim()))
+    .sort((a, b) => ROLES.indexOf(a.role) - ROLES.indexOf(b.role));
+  $('#memberList').innerHTML = list.length
+    ? list.map(m => `<div class="card row"><div class="av">${esc(m.name[0] || '?')}</div>
+        <div><h3>${esc(m.name)}</h3><div class="meta">${esc(m.role)}</div></div>
+        ${m.phone ? `<a href="tel:${esc(m.phone)}">কল</a>` : ''}</div>`).join('')
+    : '<div class="empty">কাউকে পাওয়া যায়নি</div>';
+}
+$('#q').addEventListener('input', e => renderMembers(e.target.value));
+
+function renderContact(){
+  $('#contactCard').innerHTML =
+    `<p><b>ঠিকানা:</b> ${esc(CONTACT.address)}</p>` +
+    `<p><b>এডমিন:</b> <button class="link" id="adminEntry" type="button">এডমিন এন্ট্রি</button></p>` +
+    (CONTACT.phone ? `<p><b>ফোন:</b> ${esc(CONTACT.phone)}</p>` : '') +
+    (CONTACT.email ? `<p><b>ইমেইল:</b> ${esc(CONTACT.email)}</p>` : '') +
+    '<p style="margin-top:10px">' +
+    (CONTACT.phone ? `<a class="btn" href="tel:${esc(CONTACT.phone)}">কল করুন</a>` : '') +
+    (CONTACT.facebook ? `<a class="btn" href="${esc(CONTACT.facebook)}" target="_blank" rel="noopener">ফেসবুক</a>` : '') + '</p>';
+  $('#adminEntry').onclick = () => isAdmin() ? (renderAdmin(), showTab('admin')) : adminLogin();
+}
+
+/* ---------- এডমিন প্যানেল ---------- */
+function roleSel(id, cur){
+  return `<select data-id="${id}" aria-label="পদবি">${ROLES.map(r => `<option ${r === (cur || 'সদস্য') ? 'selected' : ''}>${r}</option>`).join('')}</select>`;
+}
+function renderAdmin(){
+  if (!isAdmin()) return;
+  const users = load(), pend = users.filter(u => u.status === 'pending'), appr = users.filter(u => u.status === 'approved');
+  $('#pCount').textContent = `(${pend.length})`;
+  $('#pendingList').innerHTML = pend.length ? pend.map(u => `<div class="card">
+      <h3>${esc(u.name)}</h3><div class="meta">${esc(u.phone)}</div>
+      <div class="acts">${roleSel(u.id, '')}
+        <button class="btn g s" data-act="approve" data-id="${u.id}" type="button">অনুমোদন</button>
+        <button class="btn s" data-act="del" data-id="${u.id}" type="button">বাতিল</button></div></div>`).join('')
+    : '<div class="empty">কোনো অপেক্ষমাণ আবেদন নেই</div>';
+  $('#approvedList').innerHTML = appr.length ? appr.map(u => `<div class="card">
+      <h3>${esc(u.name)}<span class="tag">${esc(u.role)}</span></h3><div class="meta">${esc(u.phone)}</div>
+      <div class="acts">${roleSel(u.id, u.role)}
+        <button class="btn g s" data-act="role" data-id="${u.id}" type="button">পদবি বদলান</button>
+        <button class="btn s" data-act="del" data-id="${u.id}" type="button">বাদ দিন</button></div></div>`).join('')
+    : '<div class="empty">এখনো কেউ অনুমোদিত নয়</div>';
+}
+$('#admin').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b || !isAdmin()) return;
+  const id = b.dataset.id, act = b.dataset.act;
+  let users = load();
+  const u = users.find(x => x.id === id); if (!u) return;
+  const role = b.parentElement.querySelector('select').value;
+  if (act === 'approve'){ u.status = 'approved'; u.role = role; }
+  else if (act === 'role'){ u.role = role; }
+  else if (act === 'del'){
+    if (!confirm(`"${u.name}" কে মুছে ফেলবেন?`)) return;
+    users = users.filter(x => x.id !== id);
+  }
+  save(users); renderAdmin(); renderMembers($('#q').value);
+});
+$('#adminExit').onclick = () => { setAdmin(false); enter(); };
+
+/* ---------- নেভিগেশন ও লগআউট ---------- */
+document.querySelectorAll('#mainNav button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.t)));
+$('#logoutBtn').onclick = () => { setSess(null); setAdmin(false); $('#gate').classList.remove('hide'); $('#logoutBtn').classList.add('hide'); gtab(false); };
+
+enter();
+</script>
+</body>
+</html>
